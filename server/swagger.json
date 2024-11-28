@@ -1,0 +1,272 @@
+{
+  "swagger": "2.0",
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "auth-token"
+    }
+  },
+  "info": {
+    "version": "1.0.0",
+    "title": "LESBI Store",
+    "description": "API REST de comercio electrónico hecha con Express y Postgres.",
+    "license": {
+      "name": "Licenciado bajo MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:9000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "Usuarios",
+      "description": "API para usuarios"
+    },
+    {
+      "name": "Productos",
+      "description": "API para productos"
+    },
+    {
+      "name": "Pedidos",
+      "description": "API para pedidos"
+    },
+    {
+      "name": "Carrito",
+      "description": "API para carrito"
+    },
+    {
+      "name": "Reseñas",
+      "description": "API para reseñas"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get all users available",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/User"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Users"],
+        "description": "Create new user in system",
+        "summary": "Create a new user",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "Details of user to be created",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New user is created",
+            "schema": {
+              "user_id": {
+                "type": "integer",
+                "uniqueItems": true,
+                "readonly": true,
+                "example": 1
+              },
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "ID of user to find",
+          "type": "integer",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      ],
+      "get": {
+        "tags": ["Users"],
+        "description": "Get a single user by id",
+        "summary": "Get a single user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to find",
+            "type": "integer",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "user_id": {
+                "type": "integer",
+                "uniqueItems": true,
+                "readonly": true,
+                "example": 1
+              },
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user with give ID",
+        "tags": ["Users"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User with new values of properties",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is updated",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete user with given ID",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to delete",
+            "type": "integer",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is deleted",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Users"],
+        "description": "Login into the system",
+        "summary": "Login",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "Login details",
+            "schema": {
+              "$ref": "#/definitions/login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "tags": ["Users"],
+        "description": "Create an account",
+        "summary": "Sign up",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "Login details",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account created"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "properties": {
+        "password": {
+          "type": "string",
+          "example": "^@wra@m+SrNs!lS"
+        },
+        "email": {
+          "type": "string",
+          "example": "johndoe@person.com"
+        },
+        "fullname": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "username": {
+          "type": "string",
+          "example": "johnny"
+        }
+      }
+    },
+    "login": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "johndoe@person.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "^@wra@m+SrNs!lS"
+        }
+      }
+    }
+  }
+}
